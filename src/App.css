@@ -31,4 +31,19 @@
       transform: rotate(360deg);
     }
   }
-  
+.btn {
+    color: #007bff;
+    background-color: #fff;
+    border-color: #007bff;
+}
+.btn:hover {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+.input-group-append {
+    margin-top: 1rem;
+}
+.category {
+    margin-top: 5rem;
+}
