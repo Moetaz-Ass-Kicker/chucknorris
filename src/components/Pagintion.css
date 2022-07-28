@@ -4,13 +4,26 @@ nav {
 }
         
 .pagination {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+    display: -ms-flexbox;
     display: flex;
+    padding-left: 0;
+    list-style: none;
+    border-radius: 0.25rem;
+    
 }
         
 .pagination li {
-    margin: 0 1px;
+    display: list-item;
+    text-align: -webkit-match-parent;
+    
 }
-   
+.page-link {
+    position: relative;
+    display: block;
+    padding: 0.5rem 0.75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    color: #007bff;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+}
