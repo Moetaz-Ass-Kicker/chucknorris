@@ -13,14 +13,14 @@ function App() {
 
 
   // fetch jockes by text search  find in the official documentation
-  const fetchJokesByText = (text) => {
+  const fetchJokesByText = async (text) => {
     // search size must be 3 and 120
     if (text.length < 3 || text.length > 120) {
       fetchAndSetJokes();
       return alert("Please enter a search ter \n between 3 and 120 characters");
     }
     setLoading(true);
-    fetch(
+    await fetch(
       `https://api.chucknorris.io/jokes/search?query=${text}`
     )
       .then((res) => res.json())
@@ -33,9 +33,9 @@ function App() {
   }
 
   // fetch and set all jokes
-  const fetchAndSetJokes = () => {
+  const fetchAndSetJokes = async () => {
     setLoading(true);
-    fetch(
+    await fetch(
       `https://api.chucknorris.io/jokes/search?query=all`
     )
       .then((res) => res.json())
@@ -50,9 +50,9 @@ function App() {
   };
 
   // get all the categories
-  const fetchCategories = () => {
+  const fetchCategories = async () => {
     setLoading(true);
-    fetch(
+    await fetch(
       `https://api.chucknorris.io/jokes/categories`
     )
       .then((res) => res.json())
@@ -64,16 +64,16 @@ function App() {
       .catch((err) => console.log(err));
   }
   // fetch jockes by category
-  const fetchRandomJokebyCategory = (category) => {
+  const fetchRandomJokebyCategory = async (category) => {
       setLoading(true);
-      fetch(
+     await fetch(
         `https://api.chucknorris.io/jokes/random?category=${category}`
       )
         .then((res) => res.json())
         .then((res) => {
           setJokes(res);
           // don't slice the array because it will return the same joke
-          
+
           setLoading(false);
         }
         )
