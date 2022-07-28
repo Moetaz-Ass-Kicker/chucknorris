@@ -12,6 +12,7 @@ function App() {
   const [search, setSearch] = useState("");
   const [categories, setCategories] = useState([]);
   const [jockesToShow, setJockesToShow] = useState([]);
+  const [likedJokes, setLikedJokes] = useState([]);
 
 
   // fetch jockes by text search  find in the official documentation
@@ -58,7 +59,7 @@ function App() {
     )
       .then((res) => res.json())
       .then((res) => {
-        setCategories(res);
+        setCategories([...res, "Uncategorized"]);
         setLoading(false);
       }
       )
@@ -66,16 +67,45 @@ function App() {
   }
   // fetch jockes by category
   const fetchRandomJokebyCategory = async (category) => {
-      console.log(jokes);
+      // if the category is uncategorized mtch all the null categories
+      let categoryMatch
+      if (category === "Uncategorized") {
+        categoryMatch = jokes.filter((joke) => joke.categories.length === 0);
+        console.log(categoryMatch);
+        return setJockesToShow(categoryMatch);
+      }
+      // if all the categories are selected
+      console.log(category);
+      if (category === "all") {
+        setJockesToShow(jokes);
+        return setLoading(false);
+      }
       setLoading(true);
-      const categoryMatch = jokes.filter((joke) => joke.categories.includes(category));
+      categoryMatch = jokes.filter((joke) => joke.categories.includes(category));
       setJockesToShow(categoryMatch);
       setLoading(false);
-      console.log(categoryMatch);
-    }
+  }
   
+  // like and dislike a joke and save it in the local storage
 
-  
+
+const likeJoke = (id) => {
+    if (likedJokes.find((j) => j.id === id)) return;
+    const likedJoke = jokes.find((j) => j.id === id);
+
+    setLikedJokes([likedJoke, ...likedJokes]);
+    // count the number of likes for a specific joke
+    // update the joke with the new number of likes
+
+
+
+  };
+
+  const unlikeJoke = (id) => {
+    const newLikedJokes = likedJokes.filter((j) => j.id !== id);
+    setLikedJokes(newLikedJokes);
+  };
+    
 
   // Get current Jock
   const indexOfLastJockes = currentPage * jockePerPage;
@@ -86,6 +116,7 @@ function App() {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   //useEffect to fetch jokes
+  // I could do promise.all but i don't want to use it
   useEffect(() => {
     fetchAndSetJokes();
     fetchCategories();
@@ -100,6 +131,15 @@ function App() {
   return (
     <div className='container mt-5'>
       <h1 className='text-primary mb-3'>Chuck Norris Jokes</h1>
+      <div className='row'>
+      <button
+        className='btn btn-primary mb-3'
+        onClick={() => setJockesToShow(likedJokes)}
+      >
+        Liked Jokes
+      </button>
+      </div>
+
       <div className='form-group'>
         <label htmlFor='category'>Select a category</label>
         <select className='form-control' id='category' onChange={(e) => fetchRandomJokebyCategory(e.target.value)}>
@@ -130,13 +170,26 @@ function App() {
         </div>
       </div>
       
-        <JockesCadre jockes={currentJockes} />
+        <JockesCadre 
+        jockes={currentJockes}
+        likeJoke={likeJoke}
+        unlikeJoke={unlikeJoke}
+        />
       <Pagination postsPerPage={jockePerPage} totalPosts={jokes.length} paginate={paginate} />
       {loading && (
         <div className="flex items-center   w-36 absolute bottom-0 right-0 m-4">
           <Loader />
         </div>
       )}
+      
+
+
+          
+          
+
+
+
+
 
     </div>
     
