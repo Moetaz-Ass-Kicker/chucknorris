@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Pagination from "./components/Pagination";
 import JockesCadre from "./components/JockesCadre";
 import './App.css';
+import Loader from "./components/loader/Loader";
 
 function App() {
   const [jokes, setJokes] = useState([]);
@@ -10,6 +11,7 @@ function App() {
   const [jockePerPage] = useState(10);
   const [search, setSearch] = useState("");
   const [categories, setCategories] = useState([]);
+  const [jockesToShow, setJockesToShow] = useState([]);
 
 
   // fetch jockes by text search  find in the official documentation
@@ -25,7 +27,7 @@ function App() {
     )
       .then((res) => res.json())
       .then((res) => {
-        setJokes(res.result);
+        setJockesToShow(res.result);
         setLoading(false);
       }
       )
@@ -41,8 +43,7 @@ function App() {
       .then((res) => res.json())
       .then((res) => {
         setJokes(res.result);
-        // map all the dta inside the res.result and set the category to the state
-      
+        setJockesToShow(res.result);
         setLoading(false);
 
       })
@@ -65,27 +66,21 @@ function App() {
   }
   // fetch jockes by category
   const fetchRandomJokebyCategory = async (category) => {
+      console.log(jokes);
       setLoading(true);
-     await fetch(
-        `https://api.chucknorris.io/jokes/random?category=${category}`
-      )
-        .then((res) => res.json())
-        .then((res) => {
-          setJokes(res);
-          // don't slice the array because it will return the same joke
-
-          setLoading(false);
-        }
-        )
-        .catch((err) => console.log(err));
+      const categoryMatch = jokes.filter((joke) => joke.categories.includes(category));
+      setJockesToShow(categoryMatch);
+      setLoading(false);
+      console.log(categoryMatch);
     }
   
 
+  
 
   // Get current Jock
   const indexOfLastJockes = currentPage * jockePerPage;
   const indexOfFirstJockes = indexOfLastJockes - jockePerPage;
-  const currentJockes = jokes.slice(indexOfFirstJockes, indexOfLastJockes);
+  const currentJockes = jockesToShow.slice(indexOfFirstJockes, indexOfLastJockes);
   
   // Change Page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -135,10 +130,16 @@ function App() {
         </div>
       </div>
       
-
         <JockesCadre jockes={currentJockes} />
       <Pagination postsPerPage={jockePerPage} totalPosts={jokes.length} paginate={paginate} />
+      {loading && (
+        <div className="flex items-center   w-36 absolute bottom-0 right-0 m-4">
+          <Loader />
+        </div>
+      )}
+
     </div>
+    
   
   );
 }

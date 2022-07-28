@@ -4,17 +4,19 @@ nav {
 }
         
 .pagination {
-    display: -ms-flexbox;
-    display: flex;
     padding-left: 0;
     list-style: none;
     border-radius: 0.25rem;
+    width: 100vw;
+    display: flex;
+    flex-wrap: wrap;
     
 }
         
 .pagination li {
     display: list-item;
     text-align: -webkit-match-parent;
+
     
 }
 .page-link {
